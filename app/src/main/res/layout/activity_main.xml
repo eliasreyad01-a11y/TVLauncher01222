@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/bg_main"
+    android:orientation="vertical" android:paddingStart="48dp" android:paddingTop="24dp" android:paddingEnd="48dp" android:paddingBottom="24dp">
+
+    <TextView android:id="@+id/tvPlaylist" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="@color/dim" android:textSize="14sp" />
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="300dp" android:orientation="horizontal">
+        <LinearLayout android:id="@+id/tileLive" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="2"
+            android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
+            android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="110dp" android:layout_height="110dp" android:importantForAccessibility="no" android:src="@drawable/ic_tv" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/live" android:textColor="@color/white" android:textSize="30sp" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="2" android:orientation="vertical">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal">
+        <LinearLayout android:id="@+id/tileNile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
+            android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:importantForAccessibility="no" android:src="@drawable/ic_tv" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/nilesat" android:textColor="@color/white" android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/tileSports" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
+            android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:importantForAccessibility="no" android:src="@drawable/ic_sports" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/sports" android:textColor="@color/white" android:textSize="18sp" />
+        </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal">
+        <LinearLayout android:id="@+id/tilePlaylist" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
+            android:gravity="center" android:orientation="vertical">
+            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:importantForAccessibility="no" android:src="@drawable/ic_list" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/playlist" android:textColor="@color/white" android:textSize="18sp" />
+        </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1.7" android:orientation="vertical">
+        <LinearLayout android:id="@+id/btnSettings" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+            android:layout_margin="6dp" android:background="@drawable/bg_outline" android:clickable="true" android:focusable="true"
+            android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="24dp" android:paddingEnd="24dp">
+            <ImageView android:layout_width="36dp" android:layout_height="36dp" android:importantForAccessibility="no" android:src="@drawable/ic_settings" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:text="@string/settings" android:textColor="@color/white" android:textSize="20sp" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/btnReload" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+            android:layout_margin="6dp" android:background="@drawable/bg_outline" android:clickable="true" android:focusable="true"
+            android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="24dp" android:paddingEnd="24dp">
+            <ImageView android:layout_width="36dp" android:layout_height="36dp" android:importantForAccessibility="no" android:src="@drawable/ic_reload" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:text="@string/reload" android:textColor="@color/white" android:textSize="20sp" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/btnExit" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+            android:layout_margin="6dp" android:background="@drawable/bg_outline" android:clickable="true" android:focusable="true"
+            android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="24dp" android:paddingEnd="24dp">
+            <ImageView android:layout_width="36dp" android:layout_height="36dp" android:importantForAccessibility="no" android:src="@drawable/ic_exit" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:text="@string/exit" android:textColor="@color/white" android:textSize="20sp" />
+        </LinearLayout>
+        </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

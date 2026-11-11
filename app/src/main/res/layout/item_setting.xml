@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="6dp" android:background="@drawable/bg_outline"
+    android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:minHeight="56dp"
+    android:paddingStart="20dp" android:paddingEnd="20dp">
+    <TextView android:id="@+id/tvTitle" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+        android:textColor="@color/white" android:textSize="19sp" />
+    <TextView android:id="@+id/tvValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp"
+        android:textColor="@color/dim" android:textSize="17sp" />
+</LinearLayout>
