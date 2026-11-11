@@ -37,6 +37,7 @@ class LiveActivity : BrowseBase<Channel>() {
     override fun groupRank(g: String): Int {
         if (Store.active()?.type != "m3u") return Repo.rank("live", g)
         if (g.startsWith("International")) return INTL.indexOf(g.substringAfter("· ")).coerceAtLeast(0)
+        if (g == "Arab Series & Movies") return 8
         val a = ARAB.indexOf(g)
         if (a >= 0) return 10 + a
         val l = g.lowercase().padEnd(3, ' ')
