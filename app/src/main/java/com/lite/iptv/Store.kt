@@ -16,7 +16,7 @@ object Store {
         pr = c.applicationContext.getSharedPreferences("progress", Context.MODE_PRIVATE)
         if (sp.getInt("seed_v", 0) < Defaults.VERSION) {
             sp.edit().putInt("seed_v", Defaults.VERSION).apply()
-            val old = setOf("m3u0", "m3u1")                       // earlier built-in lists (12k channels)
+            val old = setOf("m3u0", "m3u1", "m3u2")                       // earlier built-in lists (12k channels)
             val cur = playlists().filter { it.id !in old }
             savePlaylists(Defaults.list() + cur)
             if (activeId.isEmpty() || activeId in old) activeId = Defaults.ID

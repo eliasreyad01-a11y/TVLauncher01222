@@ -25,20 +25,28 @@ import coil.load
  */
 @androidx.annotation.OptIn(UnstableApi::class)
 class LiveActivity : BrowseBase<Channel>() {
-    private val sports by lazy { intent.getBooleanExtra("sports", false) }
-    private val sportRx = Regex("sport|bein|ssc|match|kora|football|soccer|nba|nfl|ufc|dazn|racing|رياض|كأس|دوري|مباري|كور|كرة", RegexOption.IGNORE_CASE)
 
-    override val screenKey get() = if (sports) "sports" else "live"
-    override val titleRes get() = if (sports) R.string.sports else R.string.live
+    override val screenKey get() = "live"
+    override val titleRes get() = R.string.live
     override val itemLayout = R.layout.item_channel
     override fun makeLayoutManager(): RecyclerView.LayoutManager = LinearLayoutManager(this)
     override val hasPreview = true
     override suspend fun load() = Repo.live(applicationContext).filter { !Store.isHidden(favKey(it)) }
-    override fun groupRank(g: String) = Repo.rank("live", g)
+    // Built-in/M3U lists: International first, then Arab countries (Jordan first), then the other countries A-Z.
+    // Xtream: same order as the provider's categories.
+    override fun groupRank(g: String): Int {
+        if (Store.active()?.type != "m3u") return Repo.rank("live", g)
+        if (g == "International") return 0
+        val a = ARAB.indexOf(g)
+        if (a >= 0) return 1 + a
+        val l = g.lowercase().padEnd(3, ' ')
+        return 1000 + l[0].code * 10000 + l[1].code * 100 + l[2].code
+    }
+    private val ARAB = listOf("Jordan", "Palestine", "Saudi Arabia", "United Arab Emirates", "Egypt", "Iraq", "Kuwait", "Qatar",
+        "Bahrain", "Oman", "Lebanon", "Syria", "Yemen", "Libya", "Tunisia", "Algeria", "Morocco", "Sudan", "Mauritania")
     override fun groupOf(t: Channel) = t.group
     override fun nameOf(t: Channel) = t.name
     override fun favKey(t: Channel) = Store.favKey("L", t.id)
-    override fun acceptGroup(g: String) = !sports || sportRx.containsMatchIn(g)
 
     override fun bind(v: View, t: Channel, i: Int) {
         v.findViewById<TextView>(R.id.tvNum).text = (i + 1).toString()

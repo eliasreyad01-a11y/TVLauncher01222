@@ -19,17 +19,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(b)
         setContentView(R.layout.activity_main)
         tvPlaylist = findViewById(R.id.tvPlaylist)
-        val tiles: List<View> = listOf(R.id.tileLive, R.id.tileSports,
+        val tiles: List<View> = listOf(R.id.tileLive,
             R.id.tilePlaylist, R.id.btnSettings, R.id.btnReload, R.id.btnExit).map { findViewById<View>(it) }
 
         fun on(i: Int, f: () -> Unit) = tiles[i].setOnClickListener { Store.homeIndex = i; f() }
         on(0) { go(LiveActivity::class.java) }
-        on(1) { go(LiveActivity::class.java) { putExtra("sports", true) } }
-        on(2) { startActivity(Intent(this, PlaylistActivity::class.java)) }
-        on(3) { startActivity(Intent(this, SettingsActivity::class.java)) }
-        on(4) { reload() }
-        on(5) { finishAffinity() }
-        tiles[Store.homeIndex.coerceIn(0, 5)].requestFocus()   // remember last selected tile
+        on(1) { startActivity(Intent(this, PlaylistActivity::class.java)) }
+        on(2) { startActivity(Intent(this, SettingsActivity::class.java)) }
+        on(3) { reload() }
+        on(4) { finishAffinity() }
+        tiles[Store.homeIndex.coerceIn(0, 4)].requestFocus()   // remember last selected tile
 
         onBackPressedDispatcher.addCallback(this) {
             if (System.currentTimeMillis() - backAt < 2000) finishAffinity()

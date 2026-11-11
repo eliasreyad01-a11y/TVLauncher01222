@@ -7,28 +7,22 @@
         android:textColor="@color/dim" android:textSize="14sp" />
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="300dp" android:orientation="horizontal">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="190dp" android:orientation="horizontal">
         <LinearLayout android:id="@+id/tileLive" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="2"
             android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
             android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="110dp" android:layout_height="110dp" android:importantForAccessibility="no" android:src="@drawable/ic_tv" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/live" android:textColor="@color/white" android:textSize="30sp" />
+            <ImageView android:layout_width="72dp" android:layout_height="72dp" android:importantForAccessibility="no" android:src="@drawable/ic_tv" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/live" android:textColor="@color/white" android:textSize="22sp" />
         </LinearLayout>
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="2" android:orientation="vertical">
             <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal">
-        <LinearLayout android:id="@+id/tileSports" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-            android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
-            android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:importantForAccessibility="no" android:src="@drawable/ic_sports" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/sports" android:textColor="@color/white" android:textSize="18sp" />
-        </LinearLayout>
             </LinearLayout>
             <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal">
         <LinearLayout android:id="@+id/tilePlaylist" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
             android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
             android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:importantForAccessibility="no" android:src="@drawable/ic_list" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/playlist" android:textColor="@color/white" android:textSize="18sp" />
+            <ImageView android:layout_width="40dp" android:layout_height="40dp" android:importantForAccessibility="no" android:src="@drawable/ic_list" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/playlist" android:textColor="@color/white" android:textSize="15sp" />
         </LinearLayout>
             </LinearLayout>
         </LinearLayout>
