@@ -36,12 +36,13 @@ class LiveActivity : BrowseBase<Channel>() {
     // Xtream: same order as the provider's categories.
     override fun groupRank(g: String): Int {
         if (Store.active()?.type != "m3u") return Repo.rank("live", g)
-        if (g == "International") return 0
+        if (g.startsWith("International")) return INTL.indexOf(g.substringAfter("· ")).coerceAtLeast(0)
         val a = ARAB.indexOf(g)
-        if (a >= 0) return 1 + a
+        if (a >= 0) return 10 + a
         val l = g.lowercase().padEnd(3, ' ')
         return 1000 + l[0].code * 10000 + l[1].code * 100 + l[2].code
     }
+    private val INTL = listOf("News", "Sports", "Kids", "Movies & Series", "Documentary", "Music", "General")
     private val ARAB = listOf("Jordan", "Palestine", "Saudi Arabia", "United Arab Emirates", "Egypt", "Iraq", "Kuwait", "Qatar",
         "Bahrain", "Oman", "Lebanon", "Syria", "Yemen", "Libya", "Tunisia", "Algeria", "Morocco", "Sudan", "Mauritania")
     override fun groupOf(t: Channel) = t.group
