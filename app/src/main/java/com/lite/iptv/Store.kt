@@ -14,11 +14,12 @@ object Store {
     fun init(c: Context) {
         sp = c.applicationContext.getSharedPreferences("iptv", Context.MODE_PRIVATE)
         pr = c.applicationContext.getSharedPreferences("progress", Context.MODE_PRIVATE)
-        if (!sp.getBoolean("seeded", false)) {
-            sp.edit().putBoolean("seeded", true).apply()
-            val cur = playlists()
-            savePlaylists(Defaults.list() + cur)          // built-in lists first; existing ones are kept
-            if (cur.isEmpty()) activeId = "m3u0"
+        if (sp.getInt("seed_v", 0) < Defaults.VERSION) {
+            sp.edit().putInt("seed_v", Defaults.VERSION).apply()
+            val old = setOf("m3u0", "m3u1")                       // earlier built-in lists (12k channels)
+            val cur = playlists().filter { it.id !in old }
+            savePlaylists(Defaults.list() + cur)
+            if (activeId.isEmpty() || activeId in old) activeId = Defaults.ID
         }
     }
 

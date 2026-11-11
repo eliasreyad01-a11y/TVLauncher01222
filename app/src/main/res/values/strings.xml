@@ -84,5 +84,4 @@
     <string name="import_json">Import file (JSON)</string>
     <string name="imported_n">Imported %1$d playlists</string>
     <string name="import_fail">Could not read this file</string>
-    <string name="nilesat">Nilesat</string>
 </resources>

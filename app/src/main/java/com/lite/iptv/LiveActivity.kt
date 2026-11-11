@@ -26,15 +26,14 @@ import coil.load
 @androidx.annotation.OptIn(UnstableApi::class)
 class LiveActivity : BrowseBase<Channel>() {
     private val sports by lazy { intent.getBooleanExtra("sports", false) }
-    private val nile by lazy { intent.getBooleanExtra("nile", false) }
     private val sportRx = Regex("sport|bein|ssc|match|kora|football|soccer|nba|nfl|ufc|dazn|racing|رياض|كأس|دوري|مباري|كور|كرة", RegexOption.IGNORE_CASE)
 
-    override val screenKey get() = if (sports) "sports" else if (nile) "nile" else "live"
-    override val titleRes get() = if (sports) R.string.sports else if (nile) R.string.nilesat else R.string.live
+    override val screenKey get() = if (sports) "sports" else "live"
+    override val titleRes get() = if (sports) R.string.sports else R.string.live
     override val itemLayout = R.layout.item_channel
     override fun makeLayoutManager(): RecyclerView.LayoutManager = LinearLayoutManager(this)
     override val hasPreview = true
-    override suspend fun load() = Repo.live(applicationContext).filter { !Store.isHidden(favKey(it)) && (!nile || Nilesat.matches(it.name)) }
+    override suspend fun load() = Repo.live(applicationContext).filter { !Store.isHidden(favKey(it)) }
     override fun groupRank(g: String) = Repo.rank("live", g)
     override fun groupOf(t: Channel) = t.group
     override fun nameOf(t: Channel) = t.name

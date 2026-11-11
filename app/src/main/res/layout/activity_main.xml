@@ -16,12 +16,6 @@
         </LinearLayout>
         <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="2" android:orientation="vertical">
             <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal">
-        <LinearLayout android:id="@+id/tileNile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-            android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
-            android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="56dp" android:layout_height="56dp" android:importantForAccessibility="no" android:src="@drawable/ic_tv" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/nilesat" android:textColor="@color/white" android:textSize="18sp" />
-        </LinearLayout>
         <LinearLayout android:id="@+id/tileSports" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
             android:layout_margin="6dp" android:background="@drawable/bg_tile" android:clickable="true" android:focusable="true"
             android:gravity="center" android:orientation="vertical">

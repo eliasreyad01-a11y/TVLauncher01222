@@ -1,9 +1,8 @@
 package com.lite.iptv
 
-/** Playlists added on first launch. The first is a copy of the free iptv-org list bundled in the app; the second refreshes online. */
+/** Built-in list: Arab-world channels plus well-known international ones (a trimmed copy of the free iptv-org list). */
 object Defaults {
-    fun list() = listOf(
-        Playlist("m3u0", "Free channels (built-in)", "m3u", "asset:index.country.m3u"),
-        Playlist("m3u1", "Free channels (online)", "m3u", "https://iptv-org.github.io/iptv/index.country.m3u")
-    )
+    const val VERSION = 2
+    const val ID = "m3u2"
+    fun list() = listOf(Playlist(ID, "Arab & world channels", "m3u", "asset:index.country.m3u"))
 }

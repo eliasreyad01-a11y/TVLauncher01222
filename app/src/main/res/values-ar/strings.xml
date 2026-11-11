@@ -84,5 +84,4 @@
     <string name="import_json">استيراد ملف (JSON)</string>
     <string name="imported_n">تم استيراد %1$d قائمة</string>
     <string name="import_fail">تعذّرت قراءة هذا الملف</string>
-    <string name="nilesat">نايل سات</string>
 </resources>
