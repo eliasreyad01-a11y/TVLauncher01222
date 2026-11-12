@@ -41,11 +41,11 @@ class LiveActivity : BrowseBase<Channel>() {
         val w = WORLD.indexOf(g)
         if (w >= 0) return w
         val a = ARAB.indexOf(g)
-        if (a >= 0) return 20 + a
+        if (a >= 0) return 10 + a
         val l = g.lowercase().padEnd(3, ' ')
         return 1000 + l[0].code * 10000 + l[1].code * 100 + l[2].code
     }
-    private val WORLD = listOf("News", "Sports", "Classic Cartoons", "Kids & Cartoons", "Syrian Series & TV", "Arab Series & Movies", "Turkish Series & Movies", "World Series", "World Movies", "Documentary", "Music", "General")
+    private val WORLD = listOf("News", "Sports", "Kids & Cartoons", "Arab Series & Movies", "World Movies", "Documentary", "Music", "General")
     private val ARAB = listOf("Jordan", "Palestine", "Saudi Arabia", "United Arab Emirates", "Egypt", "Iraq", "Kuwait", "Qatar",
         "Bahrain", "Oman", "Lebanon", "Syria", "Yemen", "Libya", "Tunisia", "Algeria", "Morocco", "Sudan", "Mauritania")
     override fun groupOf(t: Channel) = t.group
