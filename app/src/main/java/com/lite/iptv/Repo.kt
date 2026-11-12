@@ -225,6 +225,7 @@ object Repo {
         val eps = HashMap<String, ArrayList<Episode>>()
         var name = ""; var logo = ""; var group = ""; var idx = 0
         f.bufferedReader().use { r ->
+            val hdr = LinkedHashMap<String, String>()
             var line = r.readLine()
             while (line != null) {
                 val t = line.trim()
@@ -237,6 +238,10 @@ object Repo {
                         "tvg-logo" -> logo = m.groupValues[2]
                         "group-title" -> group = m.groupValues[2]
                     }
+                } else if (t.startsWith("#EXTVLCOPT:http-referrer=", true) || t.startsWith("#EXTVLCOPT:http-referer=", true)) {
+                    hdr["Referer"] = t.substringAfter("=").trim()
+                } else if (t.startsWith("#EXTVLCOPT:http-user-agent=", true)) {
+                    hdr["User-Agent"] = t.substringAfter("=").trim()
                 } else if (t.startsWith("#EXTGRP:")) {
                     group = t.substring(8).trim()
                 } else if (t.isNotEmpty() && !t.startsWith("#")) {
@@ -251,9 +256,9 @@ object Repo {
                             eps.getOrPut(base) { ArrayList() }.add(Episode(id, m?.groupValues?.get(2)?.toIntOrNull() ?: 1,
                                 m?.groupValues?.get(3)?.toIntOrNull() ?: eps[base]!!.size + 1, name, t))
                         }
-                        else -> ch.add(Channel(id, name, logo, t, group.ifEmpty { "Other" }))
+                        else -> ch.add(Channel(id, name, logo, withHeaders(t, hdr), group.ifEmpty { "Other" }))
                     }
-                    name = ""; logo = ""
+                    name = ""; logo = ""; hdr.clear()
                 }
                 line = r.readLine()
             }

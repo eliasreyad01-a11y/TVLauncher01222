@@ -2,7 +2,7 @@ package com.lite.iptv
 
 /** Built-in list: Arab-world channels plus well-known international ones (a trimmed copy of the free iptv-org list). */
 object Defaults {
-    const val VERSION = 11
-    const val ID = "m3u11"
+    const val VERSION = 12
+    const val ID = "m3u12"
     fun list() = listOf(Playlist(ID, "Arab & world channels", "m3u", "asset:index.country.m3u"))
 }

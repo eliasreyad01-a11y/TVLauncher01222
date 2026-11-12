@@ -675,12 +675,16 @@ https://cdn1tlinkgo.tlink.cl/tve/index.m3u8
 #EXTINF:-1 tvg-id="TVEStar.es@HD" tvg-logo="https://i.ibb.co/j98NY8Mr/starcolor.png" group-title="General",TVE Star HD (1080p)
 https://rtvelivestream-rtveplayplus.rtve.es/rtvesec/int/star_main_1080.m3u8
 #EXTINF:-1 tvg-id="" tvg-logo="" group-title="Jordan",رؤيا Roya TV
+#EXTVLCOPT:http-referrer=https://roya.tv/
 https://live.kwikmotion.com/royatvpublic/royatv.smil/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-logo="" group-title="Jordan",المملكة Al Mamlaka TV
+#EXTVLCOPT:http-referrer=https://www.almamlakatv.com/
 https://almamlka-live.ercdn.net/almamlka/almamlka_360p.m3u8
 #EXTINF:-1 tvg-id="" tvg-logo="" group-title="Jordan",المملكة Al Mamlaka TV 2
+#EXTVLCOPT:http-referrer=https://www.almamlakatv.com/
 https://almamlka-live.ercdn.net/almamlka/almamlka.m3u8
 #EXTINF:-1 tvg-id="" tvg-logo="" group-title="Jordan",رؤيا Roya TV 2
+#EXTVLCOPT:http-referrer=https://roya.tv/
 https://weyyak-live.akamaized.net/weyyak_roya/index.m3u8
 #EXTINF:-1 tvg-id="JordanTV.jo@SD" tvg-logo="https://i.imgur.com/0XozB5N.png" group-title="Jordan",Jordan Satellite Channel (1080p)
 https://jrtv-live.ercdn.net/jordanhd/jordanhd.m3u8

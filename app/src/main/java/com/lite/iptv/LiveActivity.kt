@@ -57,18 +57,21 @@ class LiveActivity : BrowseBase<Channel>() {
         v.findViewById<TextView>(R.id.tvName).text = t.name
         v.findViewById<View>(R.id.ivStar).visibility = if (Store.isFav(favKey(t))) View.VISIBLE else View.GONE
         val iv = v.findViewById<ImageView>(R.id.ivLogo)
-        if (t.logo.isBlank()) { iv.dispose(); iv.setImageDrawable(null) } else iv.load(t.logo) { size(96) }
+        iv.dispose(); iv.setImageDrawable(null)
+        iv.tag = t.logo
+        if (t.logo.isNotBlank()) iv.postDelayed({ if (iv.tag == t.logo && iv.isAttachedToWindow) iv.load(t.logo) { size(96) } }, 250)
     }
 
     // ---------------- preview ----------------
 
     private var prev: ExoPlayer? = null
     private var prevCh: Channel? = null
+    private var httpF: DefaultHttpDataSource.Factory? = null
 
     override fun onStart() {
         super.onStart()
         val pv = findViewById<PlayerView>(R.id.pvPreview)
-        val http = DefaultHttpDataSource.Factory()
+        val http = DefaultHttpDataSource.Factory().also { httpF = it }
             .setUserAgent(Net.UA).setAllowCrossProtocolRedirects(true)
             .setConnectTimeoutMs(10_000).setReadTimeoutMs(12_000)
         val p = ExoPlayer.Builder(this).setMediaSourceFactory(DefaultMediaSourceFactory(http)).build()
@@ -97,8 +100,10 @@ class LiveActivity : BrowseBase<Channel>() {
         val p = prev ?: return
         prevCh = c
         findViewById<TextView>(R.id.tvPrevTitle).text = c.name
-        val mi = MediaItem.Builder().setUri(c.url)
-        if (c.url.contains(".m3u8", true)) mi.setMimeType(MimeTypes.APPLICATION_M3U8)
+        val (u, hd) = splitHeaders(c.url)
+        httpF?.applyHeaders(hd)
+        val mi = MediaItem.Builder().setUri(u)
+        if (u.contains(".m3u8", true)) mi.setMimeType(MimeTypes.APPLICATION_M3U8)
         p.setMediaItem(mi.build())
         p.prepare()
         p.playWhenReady = true

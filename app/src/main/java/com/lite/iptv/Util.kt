@@ -47,3 +47,23 @@ fun xtreamCreds(raw: String): Pair<String, String>? {
     val u = m["username"] ?: return null
     return u to (m["password"] ?: "")
 }
+
+/** Stream address + optional request headers, stored as "url|Referer=..&User-Agent=.." (same convention as Kodi). */
+fun withHeaders(url: String, h: Map<String, String>): String =
+    if (h.isEmpty() || url.contains("|")) url else url + "|" + h.entries.joinToString("&") { it.key + "=" + java.net.URLEncoder.encode(it.value, "UTF-8") }
+
+fun splitHeaders(u: String): Pair<String, Map<String, String>> {
+    val i = u.indexOf('|')
+    if (i < 0) return u to emptyMap()
+    val m = LinkedHashMap<String, String>()
+    for (kv in u.substring(i + 1).split("&")) {
+        val e = kv.indexOf('=')
+        if (e > 0) m[kv.substring(0, e)] = try { java.net.URLDecoder.decode(kv.substring(e + 1), "UTF-8") } catch (_: Exception) { kv.substring(e + 1) }
+    }
+    return u.substring(0, i) to m
+}
+
+fun androidx.media3.datasource.DefaultHttpDataSource.Factory.applyHeaders(h: Map<String, String>) {
+    setUserAgent(h["User-Agent"] ?: Net.UA)
+    setDefaultRequestProperties(h.filterKeys { it != "User-Agent" })
+}

@@ -48,6 +48,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private val h = Handler(Looper.getMainLooper())
     private var player: ExoPlayer? = null
+    private var httpF: DefaultHttpDataSource.Factory? = null
     private var ok = false
     private var retry = 0
     private var retryRun: Runnable? = null
@@ -150,7 +151,7 @@ class PlayerActivity : AppCompatActivity() {
     // ---------------- player setup ----------------
 
     private fun initPlayer() {
-        val http = DefaultHttpDataSource.Factory()
+        val http = DefaultHttpDataSource.Factory().also { httpF = it }
             .setUserAgent(Net.UA)
             .setAllowCrossProtocolRedirects(true)
             .setConnectTimeoutMs(10_000)
@@ -194,8 +195,10 @@ class PlayerActivity : AppCompatActivity() {
         PlayQueue.index = i
         retryRun?.let { h.removeCallbacks(it) }
         retry = 0
-        val mi = MediaItem.Builder().setUri(q.url)
-        if (q.url.contains(".m3u8", true)) mi.setMimeType(MimeTypes.APPLICATION_M3U8)
+        val (u, hd) = splitHeaders(q.url)
+        httpF?.applyHeaders(hd)
+        val mi = MediaItem.Builder().setUri(u)
+        if (u.contains(".m3u8", true)) mi.setMimeType(MimeTypes.APPLICATION_M3U8)
         subUrl?.let { u ->
             val mime = if (u.contains(".vtt", true)) MimeTypes.TEXT_VTT else MimeTypes.APPLICATION_SUBRIP
             mi.setSubtitleConfigurations(listOf(
