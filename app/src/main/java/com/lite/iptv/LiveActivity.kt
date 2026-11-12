@@ -93,6 +93,7 @@ class LiveActivity : BrowseBase<Channel>() {
                 prevCh = Channel(q.id, q.title, "", q.url, q.sub)
                 findViewById<TextView>(R.id.tvPrevTitle).text = q.title
             }
+            focusItem(PlayQueue.index)
             if (shared.playbackState == Player.STATE_READY) findViewById<TextView>(R.id.tvPrevStatus).text = ""
             return
         }
@@ -154,6 +155,30 @@ class LiveActivity : BrowseBase<Channel>() {
                         removeItem(t)
                         toast(R.string.channel_deleted)
                     }
+                }
+            }.show()
+        return true
+    }
+
+    override fun onLongCat(key: String): Boolean {
+        if (key.startsWith("*")) return false
+        val items = groupItems(key)
+        AlertDialog.Builder(this).setTitle(key)
+            .setItems(arrayOf(getString(R.string.rename_category), getString(R.string.delete_category))) { _, w ->
+                if (w == 0) {
+                    val et = android.widget.EditText(this).apply { setText(key); setSelectAllOnFocus(true); setSingleLine() }
+                    AlertDialog.Builder(this).setTitle(R.string.rename_category).setView(et)
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                            val n = et.text.toString().trim()
+                            if (n.isNotEmpty() && n != key) { Store.setGroups(items.map { favKey(it) }, n); reloadKeepCats() }
+                        }.setNegativeButton(android.R.string.cancel, null).show()
+                } else {
+                    AlertDialog.Builder(this).setTitle(key)
+                        .setMessage(getString(R.string.confirm_delete_category, items.size))
+                        .setPositiveButton(R.string.delete_category) { _, _ ->
+                            Store.hideMany(items.map { favKey(it) }); reloadKeepCats()
+                            toast(R.string.channel_deleted)
+                        }.setNegativeButton(android.R.string.cancel, null).show()
                 }
             }.show()
         return true

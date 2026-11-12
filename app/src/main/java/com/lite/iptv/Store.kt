@@ -96,6 +96,11 @@ object Store {
         sp.edit().putStringSet(hiddenKey(), s).apply()
         hiddenCache = s; hiddenFor = pid()
     }
+    fun hideMany(ks: Collection<String>) {
+        val s = hiddenSet(); s.addAll(ks)
+        sp.edit().putStringSet(hiddenKey(), s).apply()
+        hiddenCache = s; hiddenFor = pid()
+    }
     fun hiddenCount() = hiddenSet().size
     fun clearHidden() {
         sp.edit().remove(hiddenKey()).apply()
@@ -118,6 +123,10 @@ object Store {
     fun setGroup(k: String, g: String) {
         moves()[k] = g
         sp.edit().putStringSet(movesKey(), moves().map { it.key + "\t" + it.value }.toSet()).apply()
+    }
+    fun setGroups(ks: Collection<String>, g: String) {
+        val m = moves(); for (k in ks) m[k] = g
+        sp.edit().putStringSet(movesKey(), m.map { it.key + "\t" + it.value }.toSet()).apply()
     }
     fun clearMoves() { moves().clear(); sp.edit().remove(movesKey()).apply() }
 

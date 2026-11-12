@@ -42,6 +42,17 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
     protected open fun groupRank(g: String): Int = 0
     /** Long press on an item. Return true if handled. */
     protected open fun onLongItem(t: T): Boolean { toggleFav(t); return true }
+    /** Long press on a category row (key is the category name; "*..." are the built-in ones). */
+    protected open fun onLongCat(key: String): Boolean = false
+    protected fun groupItems(key: String): List<T> = groups[key] ?: emptyList()
+    protected fun reloadKeepCats() { rebuild(-1) }
+    /** Put the cursor on a given row of the current list (after coming back from full screen). */
+    protected fun focusItem(i: Int) {
+        if (!ready || cur.isEmpty()) return
+        val n = i.coerceIn(0, cur.size - 1)
+        rvItems.scrollToPosition(n)
+        rvItems.postDelayed({ (rvItems.findViewHolderForAdapterPosition(n)?.itemView ?: rvItems).requestFocus() }, 120)
+    }
     /** Live screen shows a preview pane on the right. */
     protected open val hasPreview = false
 
@@ -90,6 +101,8 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
             pendingSel = Runnable { if (curKey != c.key) select(c.key, false) }.also { h.postDelayed(it, 120) }
         }
         catAd.onClick = { c, _ -> select(c.key, true) }
+        catAd.onLong = { c, _ -> onLongCat(c.key) }
+        catAd.holdEdges = true
         itemAd.onFocus = { _, i -> focusIdx = i }
         itemAd.onClick = { _, i -> open(cur, i) }
         itemAd.onLong = { t, _ -> onLongItem(t) }
@@ -123,6 +136,11 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
             if (n != cur) { cur = n; itemAd.submit(n); updateCount() }
         }
         itemAd.notifyItemRangeChanged(0, itemAd.itemCount)   // refresh star badges, focus is kept (no animator)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: android.view.KeyEvent?): Boolean {
+        if (keyCode == android.view.KeyEvent.KEYCODE_MENU || keyCode == android.view.KeyEvent.KEYCODE_SEARCH) { openSearch(); return true }
+        return super.onKeyDown(keyCode, event)
     }
 
     override fun onDestroy() { h.removeCallbacksAndMessages(null); super.onDestroy() }

@@ -87,4 +87,7 @@
     <string name="move_channel">Move to category</string>
     <string name="new_category">New category…</string>
     <string name="moved_to">Moved to %1$s</string>
+    <string name="rename_category">Rename category</string>
+    <string name="delete_category">Delete category</string>
+    <string name="confirm_delete_category">Delete this category and its %1$d channels? You can bring them back from Settings.</string>
 </resources>

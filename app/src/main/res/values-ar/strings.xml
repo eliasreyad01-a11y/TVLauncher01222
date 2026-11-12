@@ -87,4 +87,7 @@
     <string name="move_channel">نقل إلى قسم</string>
     <string name="new_category">قسم جديد…</string>
     <string name="moved_to">تم النقل إلى %1$s</string>
+    <string name="rename_category">تعديل اسم القسم</string>
+    <string name="delete_category">حذف القسم</string>
+    <string name="confirm_delete_category">حذف هذا القسم وقنواته (%1$d)؟ بتقدر ترجعهم من الإعدادات.</string>
 </resources>
