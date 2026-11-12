@@ -144,6 +144,10 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
         }
     }
 
+    protected fun groupNames(): List<String> = groups.keys.toList()
+    /** Reload the list (after a move) and keep the cursor near the same row. */
+    protected fun rebuild(keepItem: Int) { lifecycleScope.launch { try { build(load(), keepItem) } catch (e: Exception) { /* keep old list */ } } }
+
     protected fun removeItem(t: T) {
         val i = cur.indexOf(t)
         build(all.filterNot { it === t }, i)

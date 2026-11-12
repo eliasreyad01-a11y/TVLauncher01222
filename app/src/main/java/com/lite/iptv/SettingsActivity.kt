@@ -46,7 +46,7 @@ class SettingsActivity : AppCompatActivity() {
             }) { Store.buffer = (Store.buffer + 1) % 3 },
             Row(R.string.auto_reconnect, { getString(if (Store.reconnect) R.string.on else R.string.off) }) { Store.reconnect = !Store.reconnect },
             Row(R.string.restore_deleted, { Store.hiddenCount().toString() }) {
-                val n = Store.hiddenCount(); Store.clearHidden(); toast(getString(R.string.restored_n, n))
+                val n = Store.hiddenCount(); Store.clearHidden(); Store.clearMoves(); toast(getString(R.string.restored_n, n))
             },
             Row(R.string.refresh_playlist, { "" }) { Repo.reset(this); toast(R.string.done) },
             Row(R.string.clear_cache, { "" }) { clearCache() },

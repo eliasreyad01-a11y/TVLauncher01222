@@ -31,21 +31,21 @@ class LiveActivity : BrowseBase<Channel>() {
     override val itemLayout = R.layout.item_channel
     override fun makeLayoutManager(): RecyclerView.LayoutManager = LinearLayoutManager(this)
     override val hasPreview = true
-    override suspend fun load() = Repo.live(applicationContext).filter { !Store.isHidden(favKey(it)) }
+    override suspend fun load() = Repo.live(applicationContext)
+        .filter { !Store.isHidden(favKey(it)) }
+        .map { c -> Store.groupOverride(favKey(c))?.let { c.copy(group = it) } ?: c }
     // Built-in/M3U lists: world categories first, then Arab countries (Jordan first), then the other countries A-Z.
     // Xtream: same order as the provider's categories.
     override fun groupRank(g: String): Int {
         if (Store.active()?.type != "m3u") return Repo.rank("live", g)
         val w = WORLD.indexOf(g)
         if (w >= 0) return w
-        if (g.startsWith("Arab Series & Movies")) return 8
-        if (g == "Arab Kids & Cartoons") return 9
         val a = ARAB.indexOf(g)
         if (a >= 0) return 10 + a
         val l = g.lowercase().padEnd(3, ' ')
         return 1000 + l[0].code * 10000 + l[1].code * 100 + l[2].code
     }
-    private val WORLD = listOf("News", "Sports", "Kids & Cartoons", "Movies & Series", "Documentary", "Music", "General")
+    private val WORLD = listOf("News", "Sports", "Kids & Cartoons", "Arab Series & Movies", "World Movies", "Documentary", "Music", "General")
     private val ARAB = listOf("Jordan", "Palestine", "Saudi Arabia", "United Arab Emirates", "Egypt", "Iraq", "Kuwait", "Qatar",
         "Bahrain", "Oman", "Lebanon", "Syria", "Yemen", "Libya", "Tunisia", "Algeria", "Morocco", "Sudan", "Mauritania")
     override fun groupOf(t: Channel) = t.group
@@ -117,15 +117,41 @@ class LiveActivity : BrowseBase<Channel>() {
         val fav = Store.isFav(favKey(t))
         AlertDialog.Builder(this)
             .setTitle(t.name)
-            .setItems(arrayOf(getString(if (fav) R.string.remove_fav else R.string.add_fav), getString(R.string.delete_channel))) { _, w ->
-                if (w == 0) toggleFav(t)
-                else {
-                    if (prevCh?.url == t.url) { prev?.stop(); prevCh = null; findViewById<TextView>(R.id.tvPrevTitle).text = "" }
-                    Store.hide(favKey(t))
-                    removeItem(t)
-                    toast(R.string.channel_deleted)
+            .setItems(arrayOf(getString(if (fav) R.string.remove_fav else R.string.add_fav),
+                getString(R.string.move_channel), getString(R.string.delete_channel))) { _, w ->
+                when (w) {
+                    0 -> toggleFav(t)
+                    1 -> pickCategory(t)
+                    else -> {
+                        if (prevCh?.url == t.url) { prev?.stop(); prevCh = null; findViewById<TextView>(R.id.tvPrevTitle).text = "" }
+                        Store.hide(favKey(t))
+                        removeItem(t)
+                        toast(R.string.channel_deleted)
+                    }
                 }
             }.show()
         return true
+    }
+
+    /** "Move to category": choose an existing category or type a new one. */
+    private fun pickCategory(t: Channel) {
+        val names = groupNames().filter { it != t.group }
+        val items = (names + getString(R.string.new_category)).toTypedArray()
+        AlertDialog.Builder(this).setTitle(R.string.move_channel)
+            .setItems(items) { _, i ->
+                if (i < names.size) doMove(t, names[i])
+                else {
+                    val et = android.widget.EditText(this)
+                    AlertDialog.Builder(this).setTitle(R.string.new_category).setView(et)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> et.text.toString().trim().takeIf { it.isNotEmpty() }?.let { doMove(t, it) } }
+                        .setNegativeButton(android.R.string.cancel, null).show()
+                }
+            }.show()
+    }
+
+    private fun doMove(t: Channel, g: String) {
+        Store.setGroup(favKey(t), g)
+        toast(getString(R.string.moved_to, g))
+        rebuild(0)
     }
 }

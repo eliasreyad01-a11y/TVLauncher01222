@@ -16,7 +16,7 @@ object Store {
         pr = c.applicationContext.getSharedPreferences("progress", Context.MODE_PRIVATE)
         if (sp.getInt("seed_v", 0) < Defaults.VERSION) {
             sp.edit().putInt("seed_v", Defaults.VERSION).apply()
-            val old = setOf("m3u0", "m3u1", "m3u2", "m3u3", "m3u4", "m3u5")                       // earlier built-in lists (12k channels)
+            val old = setOf("m3u0", "m3u1", "m3u2", "m3u3", "m3u4", "m3u5", "m3u6")                       // earlier built-in lists (12k channels)
             val cur = playlists().filter { it.id !in old }
             savePlaylists(Defaults.list() + cur)
             if (activeId.isEmpty() || activeId in old) activeId = Defaults.ID
@@ -100,6 +100,25 @@ object Store {
         sp.edit().remove(hiddenKey()).apply()
         hiddenCache = HashSet(); hiddenFor = pid()
     }
+
+    // ---- channels the user moved to another category, per playlist ----
+    private fun movesKey() = "moves_${pid()}"
+    private var movesCache: HashMap<String, String>? = null
+    private var movesFor = ""
+    private fun moves(): HashMap<String, String> {
+        if (movesCache == null || movesFor != pid()) {
+            val m = HashMap<String, String>()
+            for (e in sp.getStringSet(movesKey(), emptySet()) ?: emptySet()) { val i = e.indexOf('\t'); if (i > 0) m[e.substring(0, i)] = e.substring(i + 1) }
+            movesCache = m; movesFor = pid()
+        }
+        return movesCache!!
+    }
+    fun groupOverride(k: String): String? = moves()[k]
+    fun setGroup(k: String, g: String) {
+        moves()[k] = g
+        sp.edit().putStringSet(movesKey(), moves().map { it.key + "\t" + it.value }.toSet()).apply()
+    }
+    fun clearMoves() { moves().clear(); sp.edit().remove(movesKey()).apply() }
 
     // ---- continue watching ----
     fun recent(): List<Vod> {

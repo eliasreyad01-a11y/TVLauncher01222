@@ -84,4 +84,7 @@
     <string name="import_json">Import file (JSON)</string>
     <string name="imported_n">Imported %1$d playlists</string>
     <string name="import_fail">Could not read this file</string>
+    <string name="move_channel">Move to category</string>
+    <string name="new_category">New category…</string>
+    <string name="moved_to">Moved to %1$s</string>
 </resources>
