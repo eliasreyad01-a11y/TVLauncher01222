@@ -174,7 +174,11 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
     }
 
     private fun makeCats(): List<Cat> {
-        val c = makeCats()
+        val c = ArrayList<Cat>()
+        c.add(Cat("*all", getString(R.string.all), all.size))
+        c.add(Cat("*fav", getString(R.string.favorites), all.count { Store.isFav(favKey(it)) }))
+        recent()?.let { c.add(Cat("*recent", getString(R.string.continue_watching), it.size)) }
+        groups.forEach { (k, v) -> c.add(Cat(k, k.ifBlank { "-" }, v.size)) }
         return c
     }
 
