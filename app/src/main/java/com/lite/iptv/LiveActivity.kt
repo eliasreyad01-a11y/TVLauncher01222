@@ -150,8 +150,9 @@ class LiveActivity : BrowseBase<Channel>() {
     }
 
     private fun doMove(t: Channel, g: String) {
+        val i = curIndex(t)
         Store.setGroup(favKey(t), g)
         toast(getString(R.string.moved_to, g))
-        rebuild(0)
+        rebuild(i)
     }
 }

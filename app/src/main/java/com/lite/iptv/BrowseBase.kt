@@ -81,6 +81,7 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
             v.findViewById<TextView>(R.id.tvCount).text = c.count.toString()
         }
         itemAd = Adapter<T>(itemLayout) { v, t, i -> bind(v, t, i) }
+        itemAd.holdEdges = true
         rvCats.setup(LinearLayoutManager(this), catAd)
         rvItems.setup(makeLayoutManager(), itemAd)
 
@@ -148,9 +149,33 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
     /** Reload the list (after a move) and keep the cursor near the same row. */
     protected fun rebuild(keepItem: Int) { lifecycleScope.launch { try { build(load(), keepItem) } catch (e: Exception) { /* keep old list */ } } }
 
+    protected fun curIndex(t: T) = cur.indexOf(t)
+
+    /** Delete in place: the list keeps its scroll position and the cursor stays on the same row. */
     protected fun removeItem(t: T) {
         val i = cur.indexOf(t)
-        build(all.filterNot { it === t }, i)
+        all = all.filterNot { it === t }
+        val g = LinkedHashMap<String, List<T>>()
+        for ((k, v) in groups) { val n = v.filterNot { it === t }; if (n.isNotEmpty()) g[k] = n }
+        groups = g
+        cats = makeCats()
+        catAd.submit(cats)
+        if (cats.none { it.key == curKey }) curKey = "*all"
+        catAd.select(cats.indexOfFirst { it.key == curKey })
+        cur = cur.filterNot { it === t }
+        if (i >= 0) itemAd.removeAt(i) else itemAd.submit(cur)
+        focusIdx = -1
+        updateCount()
+        val n = i.coerceIn(0, (cur.size - 1).coerceAtLeast(0))
+        rvItems.postDelayed({
+            if (cur.isNotEmpty()) (rvItems.findViewHolderForAdapterPosition(n)?.itemView ?: rvItems).requestFocus()
+            else rvCats.requestFocus()
+        }, 80)
+    }
+
+    private fun makeCats(): List<Cat> {
+        val c = makeCats()
+        return c
     }
 
     private fun build(l: List<T>, keepItem: Int = -1) {
@@ -158,11 +183,7 @@ abstract class BrowseBase<T : Any> : AppCompatActivity() {
         val g = LinkedHashMap<String, ArrayList<T>>()
         for (t in all) g.getOrPut(groupOf(t)) { ArrayList() }.add(t)
         groups = g.entries.sortedBy { groupRank(it.key) }.associateTo(LinkedHashMap()) { it.key to it.value }
-        val c = ArrayList<Cat>()
-        c.add(Cat("*all", getString(R.string.all), all.size))
-        c.add(Cat("*fav", getString(R.string.favorites), all.count { Store.isFav(favKey(it)) }))
-        recent()?.let { c.add(Cat("*recent", getString(R.string.continue_watching), it.size)) }
-        groups.forEach { (k, v) -> c.add(Cat(k, k.ifBlank { "-" }, v.size)) }
+        val c = makeCats()
         cats = c
         catAd.submit(c)
         val last = Store.getStr("cat_$screenKey", "*all")

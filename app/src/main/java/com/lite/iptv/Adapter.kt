@@ -17,7 +17,18 @@ class Adapter<T>(private val layout: Int, private val binder: (View, T, Int) -> 
     var onLong: ((T, Int) -> Boolean)? = null
     var onFocus: ((T, Int) -> Unit)? = null
 
+    /** When true, DOWN on the last row and UP on the first row are swallowed so focus never leaves the list. */
+    var holdEdges = false
+
     fun submit(l: List<T>) { items = l; notifyDataSetChanged() }
+
+    /** Remove one row without resetting scroll position. */
+    fun removeAt(i: Int) {
+        if (i !in items.indices) return
+        items = items.filterIndexed { k, _ -> k != i }
+        notifyItemRemoved(i)
+        if (i < items.size) notifyItemRangeChanged(i, items.size - i)
+    }
 
     fun select(i: Int) {
         val old = selected
@@ -36,6 +47,12 @@ class Adapter<T>(private val layout: Int, private val binder: (View, T, Int) -> 
         v.setOnLongClickListener {
             val i = h.bindingAdapterPosition
             i >= 0 && (onLong?.invoke(items[i], i) ?: false)
+        }
+        v.setOnKeyListener { _, code, ev ->
+            if (!holdEdges || ev.action != android.view.KeyEvent.ACTION_DOWN) return@setOnKeyListener false
+            val i = h.bindingAdapterPosition
+            (code == android.view.KeyEvent.KEYCODE_DPAD_DOWN && i == itemCount - 1) ||
+                (code == android.view.KeyEvent.KEYCODE_DPAD_UP && i == 0)
         }
         v.setOnFocusChangeListener { _, focused ->
             if (focused) {

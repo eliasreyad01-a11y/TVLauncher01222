@@ -11,16 +11,24 @@ android {
         applicationId = "com.lite.iptv"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
+        versionCode = (System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1) + 100
         versionName = "1.0"
         resourceConfigurations += listOf("en", "ar")
+    }
+    signingConfigs {
+        create("fixed") {
+            storeFile = file("lite-release.jks")
+            storePassword = "liteiptv123"
+            keyAlias = "lite"
+            keyPassword = "liteiptv123"
+        }
     }
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("debug") // installable out of the box; replace for store release
+            signingConfig = signingConfigs.getByName("fixed") // same key every build, so new APKs install over old ones
         }
     }
     compileOptions {
