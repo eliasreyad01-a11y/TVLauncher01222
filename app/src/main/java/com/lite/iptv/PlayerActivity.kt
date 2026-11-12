@@ -138,6 +138,20 @@ class PlayerActivity : AppCompatActivity() {
         h.post(ticker)
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (ok && isFinishing && live) {         // leaving full screen: give the running player back to the list screen
+            val p = player
+            if (p != null) {
+                h.removeCallbacksAndMessages(null)
+                p.removeListener(listener)
+                pv.player = null
+                SharedPlayer.player = p; SharedPlayer.http = httpF
+                player = null
+            }
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         if (!ok) return
@@ -150,7 +164,19 @@ class PlayerActivity : AppCompatActivity() {
 
     // ---------------- player setup ----------------
 
+    private var adopted = false
+
     private fun initPlayer() {
+        SharedPlayer.player?.let { p ->
+            adopted = true
+            httpF = SharedPlayer.http
+            SharedPlayer.player = null
+            p.addListener(listener)
+            pv.player = p
+            player = p
+            if (p.playbackState == Player.STATE_BUFFERING) showStatus(getString(R.string.loading), true)
+            return
+        }
         val http = DefaultHttpDataSource.Factory().also { httpF = it }
             .setUserAgent(Net.UA)
             .setAllowCrossProtocolRedirects(true)
@@ -193,6 +219,10 @@ class PlayerActivity : AppCompatActivity() {
         val p = player ?: return
         val q = PlayQueue.items[i]
         PlayQueue.index = i
+        if (adopted) {
+            adopted = false
+            if (q.url == SharedPlayer.url) { if (live) Store.setStr("last_live", q.id); updateMeta(); return }
+        }
         retryRun?.let { h.removeCallbacks(it) }
         retry = 0
         val (u, hd) = splitHeaders(q.url)
@@ -330,7 +360,8 @@ class PlayerActivity : AppCompatActivity() {
         if (controls.visibility == View.VISIBLE) { keepControls(); return super.dispatchKeyEvent(e) }
         when (k) {
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                if (!live) toggle()
+                if (live) { finish(); return true }   // OK on a live channel goes back to the lists
+                toggle()
                 showControls(); return true
             }
             KeyEvent.KEYCODE_DPAD_UP -> { if (live) step(-1) else showControls(); return true }

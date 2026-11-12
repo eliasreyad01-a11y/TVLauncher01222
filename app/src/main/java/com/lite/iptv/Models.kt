@@ -25,3 +25,10 @@ object PlayQueue {
         this.live = live; this.items = items; this.index = index
     }
 }
+
+/** The preview player is handed to the full-screen screen (and back) so the stream never restarts. */
+object SharedPlayer {
+    var player: androidx.media3.exoplayer.ExoPlayer? = null
+    var http: androidx.media3.datasource.DefaultHttpDataSource.Factory? = null
+    var url: String? = null
+}

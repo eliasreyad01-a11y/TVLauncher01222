@@ -68,25 +68,42 @@ class LiveActivity : BrowseBase<Channel>() {
     private var prevCh: Channel? = null
     private var httpF: DefaultHttpDataSource.Factory? = null
 
+    private val prevListener = object : Player.Listener {
+        override fun onPlaybackStateChanged(state: Int) {
+            if (state == Player.STATE_READY) findViewById<TextView>(R.id.tvPrevStatus).text = ""
+            else if (state == Player.STATE_BUFFERING) findViewById<TextView>(R.id.tvPrevStatus).setText(R.string.loading)
+        }
+        override fun onPlayerError(error: PlaybackException) {
+            findViewById<TextView>(R.id.tvPrevStatus).setText(R.string.play_error)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         val pv = findViewById<PlayerView>(R.id.pvPreview)
+        val shared = SharedPlayer.player
+        if (shared != null) {                   // back from full screen: same player, same stream, no restart
+            SharedPlayer.player = null
+            httpF = SharedPlayer.http
+            shared.addListener(prevListener)
+            pv.player = shared
+            prev = shared
+            if (PlayQueue.live && PlayQueue.items.isNotEmpty()) {
+                val q = PlayQueue.items[PlayQueue.index.coerceIn(0, PlayQueue.items.size - 1)]
+                prevCh = Channel(q.id, q.title, "", q.url, q.sub)
+                findViewById<TextView>(R.id.tvPrevTitle).text = q.title
+            }
+            if (shared.playbackState == Player.STATE_READY) findViewById<TextView>(R.id.tvPrevStatus).text = ""
+            return
+        }
         val http = DefaultHttpDataSource.Factory().also { httpF = it }
             .setUserAgent(Net.UA).setAllowCrossProtocolRedirects(true)
             .setConnectTimeoutMs(10_000).setReadTimeoutMs(12_000)
         val p = ExoPlayer.Builder(this).setMediaSourceFactory(DefaultMediaSourceFactory(http)).build()
-        p.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(state: Int) {
-                if (state == Player.STATE_READY) findViewById<TextView>(R.id.tvPrevStatus).text = ""
-                else if (state == Player.STATE_BUFFERING) findViewById<TextView>(R.id.tvPrevStatus).setText(R.string.loading)
-            }
-            override fun onPlayerError(error: PlaybackException) {
-                findViewById<TextView>(R.id.tvPrevStatus).setText(R.string.play_error)
-            }
-        })
+        p.addListener(prevListener)
         pv.player = p
         prev = p
-        prevCh?.let { startPreview(it) }       // coming back from full screen: resume the same channel
+        prevCh?.let { startPreview(it) }
     }
 
     override fun onStop() {
@@ -112,8 +129,12 @@ class LiveActivity : BrowseBase<Channel>() {
     override fun open(list: List<Channel>, index: Int) {
         val c = list[index]
         if (prevCh?.url == c.url && prev != null) {
-            prev?.stop()                        // many providers allow one connection: free it before full screen
             PlayQueue.set(true, list.map { QItem(it.id, it.name, it.group, it.url, favKey(it)) }, index)
+            val p = prev!!                      // hand the running player to full screen: no reconnect, no black gap
+            p.removeListener(prevListener)
+            findViewById<PlayerView>(R.id.pvPreview).player = null
+            SharedPlayer.player = p; SharedPlayer.http = httpF; SharedPlayer.url = c.url
+            prev = null
             startActivity(Intent(this, PlayerActivity::class.java))
         } else startPreview(c)
     }
