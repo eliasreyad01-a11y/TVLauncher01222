@@ -41,11 +41,12 @@ class MainActivity : AppCompatActivity() {
         if (crash.isNotEmpty()) {
             Store.setStr("last_crash", "")
             val tv = TextView(this).apply { text = crash; textSize = 11f; setTextColor(0xFFFFFFFF.toInt()); setPadding(32, 16, 32, 16); setTextIsSelectable(true) }
-            androidx.appcompat.app.AlertDialog.Builder(this).setTitle("Crash report")
+            androidx.appcompat.app.AlertDialog.Builder(this).setTitle("Crash report (" + (try { packageManager.getPackageInfo(packageName, 0).versionName } catch (e: Exception) { "" }) + ")")
                 .setView(android.widget.ScrollView(this).apply { addView(tv) })
                 .setPositiveButton(android.R.string.ok, null).show()
         }
-        tvPlaylist.text = Store.active()?.name ?: getString(R.string.no_playlist)
+        val ver = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (e: Exception) { "" }
+        tvPlaylist.text = (Store.active()?.name ?: getString(R.string.no_playlist)) + "   •   " + ver
     }
 
     private fun go(cls: Class<*>, ex: Intent.() -> Unit = {}) {
