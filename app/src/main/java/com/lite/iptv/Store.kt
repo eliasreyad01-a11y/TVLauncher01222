@@ -44,6 +44,7 @@ object Store {
 
     fun getStr(k: String, d: String) = sp.getString(k, d) ?: d
     fun setStr(k: String, v: String) = sp.edit().putString(k, v).apply()
+    fun setStrNow(k: String, v: String) { sp.edit().putString(k, v).commit() }
 
     // ---- playlists ----
     fun playlists(): List<Playlist> {

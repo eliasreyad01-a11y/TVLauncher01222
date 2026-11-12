@@ -37,6 +37,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val crash = Store.getStr("last_crash", "")
+        if (crash.isNotEmpty()) {
+            Store.setStr("last_crash", "")
+            val tv = TextView(this).apply { text = crash; textSize = 11f; setTextColor(0xFFFFFFFF.toInt()); setPadding(32, 16, 32, 16); setTextIsSelectable(true) }
+            androidx.appcompat.app.AlertDialog.Builder(this).setTitle("Crash report")
+                .setView(android.widget.ScrollView(this).apply { addView(tv) })
+                .setPositiveButton(android.R.string.ok, null).show()
+        }
         tvPlaylist.text = Store.active()?.name ?: getString(R.string.no_playlist)
     }
 

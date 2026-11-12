@@ -12,6 +12,11 @@ class App : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         Store.init(this)
+        val prevH = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            try { Store.setStrNow("last_crash", android.util.Log.getStackTraceString(e).take(3500)) } catch (_: Throwable) {}
+            prevH?.uncaughtException(t, e)
+        }
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(Store.lang))
     }
 
