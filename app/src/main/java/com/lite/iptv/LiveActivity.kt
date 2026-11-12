@@ -32,18 +32,20 @@ class LiveActivity : BrowseBase<Channel>() {
     override fun makeLayoutManager(): RecyclerView.LayoutManager = LinearLayoutManager(this)
     override val hasPreview = true
     override suspend fun load() = Repo.live(applicationContext).filter { !Store.isHidden(favKey(it)) }
-    // Built-in/M3U lists: International first, then Arab countries (Jordan first), then the other countries A-Z.
+    // Built-in/M3U lists: world categories first, then Arab countries (Jordan first), then the other countries A-Z.
     // Xtream: same order as the provider's categories.
     override fun groupRank(g: String): Int {
         if (Store.active()?.type != "m3u") return Repo.rank("live", g)
-        if (g.startsWith("International")) return INTL.indexOf(g.substringAfter("· ")).coerceAtLeast(0)
-        if (g == "Arab Series & Movies") return 8
+        val w = WORLD.indexOf(g)
+        if (w >= 0) return w
+        if (g.startsWith("Arab Series & Movies")) return 8
+        if (g == "Arab Kids & Cartoons") return 9
         val a = ARAB.indexOf(g)
         if (a >= 0) return 10 + a
         val l = g.lowercase().padEnd(3, ' ')
         return 1000 + l[0].code * 10000 + l[1].code * 100 + l[2].code
     }
-    private val INTL = listOf("News", "Sports", "Kids", "Movies & Series", "Documentary", "Music", "General")
+    private val WORLD = listOf("News", "Sports", "Kids & Cartoons", "Movies & Series", "Documentary", "Music", "General")
     private val ARAB = listOf("Jordan", "Palestine", "Saudi Arabia", "United Arab Emirates", "Egypt", "Iraq", "Kuwait", "Qatar",
         "Bahrain", "Oman", "Lebanon", "Syria", "Yemen", "Libya", "Tunisia", "Algeria", "Morocco", "Sudan", "Mauritania")
     override fun groupOf(t: Channel) = t.group

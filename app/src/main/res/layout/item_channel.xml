@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_row"
-    android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:minHeight="54dp"
+    android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:minHeight="48dp"
     android:paddingStart="12dp" android:paddingEnd="12dp">
     <TextView android:id="@+id/tvNum" android:layout_width="44dp" android:layout_height="wrap_content" android:textColor="@color/dim" android:textSize="14sp" />
-    <ImageView android:id="@+id/ivLogo" android:layout_width="40dp" android:layout_height="40dp" android:layout_marginEnd="12dp"
+    <ImageView android:id="@+id/ivLogo" android:layout_width="26dp" android:layout_height="26dp" android:layout_marginEnd="10dp"
         android:importantForAccessibility="no" android:scaleType="fitCenter" />
     <TextView android:id="@+id/tvName" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-        android:ellipsize="end" android:maxLines="1" android:textAlignment="viewStart" android:textColor="@color/white" android:textSize="18sp" />
+        android:ellipsize="end" android:maxLines="1" android:textAlignment="viewStart" android:textColor="@color/white" android:textSize="17sp" />
     <ImageView android:id="@+id/ivStar" android:layout_width="20dp" android:layout_height="20dp" android:importantForAccessibility="no"
         android:src="@drawable/ic_star" android:visibility="gone" />
 </LinearLayout>
